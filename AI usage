@@ -1,0 +1,11 @@
+AI Usage in This Project
+Which parts used AI:
+Structuring the logic for handling duplicate cart entries and the fixed-size array validation.
+Generating a verbose list for the flowchart steps.
+
+Why AI was used:
+To ensure the logic for updating existing cart items was efficient (preventing duplicate rows).
+To ensure all specific validation requirements (like int.TryParse) were correctly implemented.
+What was changed/improved:
+I manually adjusted the CartItem class to include a computed property for ItemTotal to make the receipt generation cleaner.
+I added specific out-of-stock data to the menu to test the validation logic.
