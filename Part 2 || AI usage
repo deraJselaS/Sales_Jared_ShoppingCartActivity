@@ -1,0 +1,5 @@
+Cart Management Logic: Designing the logic for removing items from a fixed size array and shifting elements to maintain order
+
+Payment and Receipt Formatting: Structuring the validation loops for payment and formatting the "DateTime" output for the receipt
+
+Data Structures: Creating the "Order" class to efficiently track transaction history
