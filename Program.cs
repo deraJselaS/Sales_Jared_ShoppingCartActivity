@@ -22,6 +22,11 @@ namespace ShoppingCartSystem
             Console.WriteLine($"{Id}. {Name} - P{Price} (Stock: {RemainingStock})");
         }
 
+        public double GetItemTotal(int quantity)
+        {
+            return Price * quantity;
+        }
+
         public bool HasEnoughStock(int quantity)
         {
             return RemainingStock >= quantity;
@@ -37,19 +42,18 @@ namespace ShoppingCartSystem
     {
         public Product ProductInfo { get; set; }
         public int Quantity { get; set; }
-        public double ItemTotal => ProductInfo.Price * Quantity;
+        public double Subtotal { get; set; }
     }
 
     class Program
     {
         static void Main(string[] args)
         {
-            // 1. Store Menu
             Product[] menu = {
                 new Product(1, "Laptop", 35000, 5),
                 new Product(2, "Mouse", 500, 20),
                 new Product(3, "Keyboard", 1200, 10),
-                new Product(4, "Monitor", 7000, 0) // Out of stock example
+                new Product(4, "Monitor", 7000, 0)
             };
 
             CartItem[] cart = new CartItem[10];
@@ -61,7 +65,6 @@ namespace ShoppingCartSystem
                 Console.WriteLine("\n--- STORE MENU ---");
                 foreach (var p in menu) p.DisplayProduct();
 
-                // 2 & 4. Input & Validation
                 Console.Write("\nEnter product number: ");
                 if (!int.TryParse(Console.ReadLine(), out int prodNum) || prodNum < 1 || prodNum > menu.Length)
                 {
@@ -88,14 +91,15 @@ namespace ShoppingCartSystem
                         }
                         else
                         {
-                            // 5 & 6. Add to cart / Handle Duplicates
                             bool found = false;
                             for (int i = 0; i < cartCount; i++)
                             {
                                 if (cart[i].ProductInfo.Id == selected.Id)
                                 {
                                     cart[i].Quantity += qty;
+                                    cart[i].Subtotal += selected.GetItemTotal(qty); 
                                     selected.DeductStock(qty);
+                                    Console.WriteLine("Cart updated (Quantity increased).");
                                     found = true;
                                     break;
                                 }
@@ -105,7 +109,12 @@ namespace ShoppingCartSystem
                             {
                                 if (cartCount < cart.Length)
                                 {
-                                    cart[cartCount] = new CartItem { ProductInfo = selected, Quantity = qty };
+                                    cart[cartCount] = new CartItem 
+                                    { 
+                                        ProductInfo = selected, 
+                                        Quantity = qty,
+                                        Subtotal = selected.GetItemTotal(qty)
+                                    };
                                     selected.DeductStock(qty);
                                     cartCount++;
                                     Console.WriteLine("Added to cart.");
@@ -119,17 +128,22 @@ namespace ShoppingCartSystem
                     }
                 }
 
-                Console.Write("Add more items? (Y/N): ");
-                choice = Console.ReadLine().ToUpper();
+                while (true)
+                {
+                    Console.Write("Add more items? (Y/N): ");
+                    choice = Console.ReadLine().ToUpper();
+                    if (choice == "Y" || choice == "N") break;
+                    Console.WriteLine("Invalid input. Please enter Y or N only.");
+                }
+
             } while (choice == "Y");
 
-            // 9, 10, 11. Receipt and Totals
             double grandTotal = 0;
             Console.WriteLine("\n--- FINAL RECEIPT ---");
             for (int i = 0; i < cartCount; i++)
             {
-                Console.WriteLine($"{cart[i].ProductInfo.Name} x{cart[i].Quantity} - P{cart[i].ItemTotal}");
-                grandTotal += cart[i].ItemTotal;
+                Console.WriteLine($"{cart[i].ProductInfo.Name} x{cart[i].Quantity} - P{cart[i].Subtotal}");
+                grandTotal += cart[i].Subtotal;
             }
 
             Console.WriteLine($"Grand Total: P{grandTotal}");
@@ -140,10 +154,6 @@ namespace ShoppingCartSystem
                 grandTotal -= discount;
             }
             Console.WriteLine($"Final Total: P{grandTotal}");
-
-            // 12. Updated Stock
-            Console.WriteLine("\n--- UPDATED STOCK ---");
-            foreach (var p in menu) p.DisplayProduct();
         }
     }
 }
