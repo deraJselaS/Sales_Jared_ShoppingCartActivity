@@ -6,7 +6,9 @@ class Product
     public int RemainingStock { get; set; }
     public string Category { get; set; }
 }
+
 class Order
+
 {
     public string ReceiptNumber { get; set; }
     public DateTime OrderDate { get; set; }
