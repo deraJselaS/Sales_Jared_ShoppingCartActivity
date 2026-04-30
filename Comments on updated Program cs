@@ -1,0 +1,6 @@
+# Method Added: 
+Integrated GetItemTotal(int quantity) within the Product class to fulfill Requirement 3 explicitly.
+# Confirmation Fixed: 
+Added a specific "Cart updated" message within the duplicate handling loop so users get feedback regardless of whether it's a new or existing entry.
+# Validation Loop: 
+Wrapped the "Add more items" prompt in a while(true) loop to force a valid Y or N response, preventing accidental program exits on typos.
